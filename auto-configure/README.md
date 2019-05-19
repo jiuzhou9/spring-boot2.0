@@ -132,3 +132,65 @@ System.out.println("获取 mySecondRepository：" + mySecondRepository);
             @MyFirstLevelRepository
                 @MySecondLevelRepository
                 
+## @Enable
+可以通过此注解激活，一个系列的配置。  
+例如：  
+定义一个 `@EnableHelloWorld` 相当于激活 HelloWorld 一系列（模块）的入口。
+```
+/**
+ * @author wangjiuzhou (jiuzhou@shanshu.ai)
+ * @date 2019/05/20
+ *
+ * 可以通过 @EnableHelloWorld 激活 HelloWorld 模块，
+ * 在激活过程中，可以执行 HelloWorldConfiguration 中的一系列 @Bean 等操作。
+ */
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Import(HelloWorldConfiguration.class)
+public @interface EnableHelloWorld {
+}
+```
+定义相应的 `HelloWorldConfiguration` 相当于 HelloWorld 模块的配置。下面的例子中只是注册了一个bean 名字为 `helloWorld`
+```
+/**
+ * @author wangjiuzhou (jiuzhou@shanshu.ai)
+ * @date 2019/05/20
+ *
+ * HelloWorld 模块配置
+ */
+public class HelloWorldConfiguration {
+
+    /**
+     * 方法名即 Bean 名称
+     * @return
+     */
+    @Bean
+    public String helloWorld() {
+        return "Hello,World 2019";
+    }
+}
+```
+定义一个启动类，加载spring上下文：  
+```
+/**
+ * @author wangjiuzhou (jiuzhou@shanshu.ai)
+ * @date 2019/05/20
+ * 
+ * 启动类，加载spring上下文
+ */
+@EnableHelloWorld
+public class EnableHelloWorldBootStrap {
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = new SpringApplicationBuilder(EnableHelloWorldBootStrap.class)
+                .web(WebApplicationType.NONE)
+                .run(args);
+
+        String helloWorld = context.getBean("helloWorld", String.class);
+
+        System.out.println("helloWorld Bean:" + helloWorld);
+    }
+}
+```
+启动可以看见：>>>> helloWorld Bean:Hello,World 2019  
