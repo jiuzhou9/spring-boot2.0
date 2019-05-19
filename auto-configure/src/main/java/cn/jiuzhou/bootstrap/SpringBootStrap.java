@@ -1,6 +1,7 @@
 package cn.jiuzhou.bootstrap;
 
 import cn.jiuzhou.repository.MyFirstRepository;
+import cn.jiuzhou.repository.MySecondRepository;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -23,6 +24,9 @@ public class SpringBootStrap {
                 .run(args);
         //获取指定bean
         MyFirstRepository myFirstRepository = context.getBean("myFirstRepository", MyFirstRepository.class);
-        System.out.println("获取myFirstRepository：" + myFirstRepository);
+        System.out.println("获取 myFirstRepository：" + myFirstRepository);
+
+        MySecondRepository mySecondRepository = context.getBean("mySecondRepository", MySecondRepository.class);
+        System.out.println("获取 mySecondRepository：" + mySecondRepository);
     }
 }
