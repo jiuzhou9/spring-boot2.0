@@ -9,7 +9,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
  * @author wangjiuzhou
  */
 @SpringBootApplication
-@ServletComponentScan(value = "cn.jiuzhou.web.servlet")
+@ServletComponentScan(basePackages = "cn.jiuzhou.web.servlet")
 public class SpringBootServletApp
 {
     public static void main( String[] args )
