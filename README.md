@@ -1,2 +1,12 @@
 # spring-boot2.0
 spring-boot2.0
+
+## 三大（核心）特性
+* 组件自动装配：web MVC、web Flux、JDBC等  
+* 嵌入式web容器：tomcat、jetty、undertow
+* 生产准备特性：指标、健康检查、外部化配置等
+
+## 组件自动装配
+* 激活：@EnableAutoConfiguration
+* 配置：/META-INF/spring.factories
+* 实现：XXXAutoConfiguration
