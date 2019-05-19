@@ -3,6 +3,7 @@
   - [Stereotype Annotations（模式注解）](#stereotype-annotations%E6%A8%A1%E5%BC%8F%E6%B3%A8%E8%A7%A3)
   - [@Component的"派生性"](#component%E7%9A%84%22%E6%B4%BE%E7%94%9F%E6%80%A7%22)
   - [@Component的层次性](#component%E7%9A%84%E5%B1%82%E6%AC%A1%E6%80%A7)
+  - [@Enable](#enable)
 
 # auto-configure
 > 基于springBoot 2.0.2.RELEASE版本  
