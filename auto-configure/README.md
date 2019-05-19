@@ -42,9 +42,6 @@ and `@Configuration`. `@Repository`, `@Service`, etc. are specializations of @Co
 ### @Component的"派生性"
 Java中没有"派生性"的概念因此打引号。通过自定义注解 + 手动装配的方式，说明"派生性"。（见下面示例）
 
-### @Component的层次性"
-例如：
-定义自定义注解，从形式上来看更像是属于 `@Component`派生出来的。
 ```
 /**
  * @author wangjiuzhou (835540436@qq.com)
@@ -96,3 +93,44 @@ public class SpringBootStrap {
     }
 }
 ```
+### @Component的层次性"
+例如：
+定义二级注解，派生于一级注解：
+```$xslt
+/**
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/05/19
+ */
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@MyFirstLevelRepository
+public @interface MySecondLevelRepository {
+    String value() default "";
+}
+```
+定义新的Java Bean,并且使用二级注解：
+```$xslt
+/**
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/05/19
+ *
+ * 第二个 mySecondRepository
+ */
+@MySecondLevelRepository(value = "mySecondRepository")
+public class MySecondRepository {
+}
+```
+同样的方式获取bean：
+```$xslt
+MySecondRepository mySecondRepository = context.getBean("mySecondRepository", MySecondRepository.class);
+System.out.println("获取 mySecondRepository：" + mySecondRepository);
+```
+层次性表现：  
+    
+    @Component
+        @Repository
+            @MyFirstLevelRepository
+                @MySecondLevelRepository
+                
+            
