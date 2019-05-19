@@ -1,15 +1,14 @@
-## auto-configure
+- [auto-configure](#auto-configure)
+  - [元注解（释）](#%E5%85%83%E6%B3%A8%E8%A7%A3%E9%87%8A)
+  - [Stereotype Annotations（模式注解）](#stereotype-annotations%E6%A8%A1%E5%BC%8F%E6%B3%A8%E8%A7%A3)
+  - [@Component的"派生性"](#component%E7%9A%84%22%E6%B4%BE%E7%94%9F%E6%80%A7%22)
+  - [@Component的层次性](#component%E7%9A%84%E5%B1%82%E6%AC%A1%E6%80%A7)
+
+# auto-configure
 > 基于springBoot 2.0.2.RELEASE版本  
 spring boot 的自动装配
-
-
-* 元注解（释） 
-* Stereotype Annotations（模式注解） 
-* @Component  
-    * "派生性"    
-    * 层次性  
     
-### 元注解（释） 
+## 元注解（释） 
 https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#meta-annotations  
 
     A meta-annotation is an annotation that is declared on another annotation. 
@@ -17,7 +16,7 @@ https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Progr
     For example, any annotation that is declared to be documented is meta-annotated with 
     @Documented from the java.lang.annotation package.
     
-### Stereotype Annotations（模式注解）  
+## Stereotype Annotations（模式注解）  
 https://github.com/spring-projects/spring-framework/wiki/Spring-Annotation-Programming-Model#stereotype-annotations  
   
 > A stereotype annotation is an annotation that is used to declare the role that a 
@@ -39,7 +38,7 @@ and `@Configuration`. `@Repository`, `@Service`, etc. are specializations of @Co
 `@Component` 作为一种由 Spring 容器托管的通用模式组件，任何被 `@Component` 标准的组件均为组件扫描的候选对象。
 类似地，凡是被 @Component 元标注(meta-annotated)的注解，如 `@Service` ，当任何组件标注它时，也被视作组件扫 描的候选对象
 
-### @Component的"派生性"
+## @Component的"派生性"
 Java中没有"派生性"的概念因此打引号。通过自定义注解 + 手动装配的方式，说明"派生性"。（见下面示例）
 
 ```
@@ -59,7 +58,7 @@ public @interface MyFirstLevelRepository {
 }
 ```
 使用自定义注解：
-```$xslt
+```
 /**
  * @author wangjiuzhou (835540436@qq.com)
  * @date 2019/05/19
@@ -71,7 +70,7 @@ public class MyFirstRepository {
 }
 ```
 从spring的上下文获取被注解标定的bean：
-```$xslt
+```
 /**
  * @author wangjiuzhou (835540436@qq.com)
  * @date 2019/05/19
@@ -93,10 +92,10 @@ public class SpringBootStrap {
     }
 }
 ```
-### @Component的层次性"
+## @Component的层次性
 例如：
 定义二级注解，派生于一级注解：
-```$xslt
+```
 /**
  * @author wangjiuzhou (835540436@qq.com)
  * @date 2019/05/19
@@ -110,7 +109,7 @@ public @interface MySecondLevelRepository {
 }
 ```
 定义新的Java Bean,并且使用二级注解：
-```$xslt
+```
 /**
  * @author wangjiuzhou (835540436@qq.com)
  * @date 2019/05/19
@@ -122,7 +121,7 @@ public class MySecondRepository {
 }
 ```
 同样的方式获取bean：
-```$xslt
+```
 MySecondRepository mySecondRepository = context.getBean("mySecondRepository", MySecondRepository.class);
 System.out.println("获取 mySecondRepository：" + mySecondRepository);
 ```
@@ -133,4 +132,3 @@ System.out.println("获取 mySecondRepository：" + mySecondRepository);
             @MyFirstLevelRepository
                 @MySecondLevelRepository
                 
-            
