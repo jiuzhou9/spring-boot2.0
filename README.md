@@ -10,3 +10,6 @@ spring-boot2.0
 * 激活：@EnableAutoConfiguration
 * 配置：/META-INF/spring.factories
 * 实现：XXXAutoConfiguration
+
+## 项目模块  
+<a href="spring-boot-servlet/README.md">springBoot-web</a>
