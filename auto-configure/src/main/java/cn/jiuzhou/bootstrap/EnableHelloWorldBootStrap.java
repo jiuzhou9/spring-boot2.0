@@ -6,10 +6,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * @author wangjiuzhou (jiuzhou@shanshu.ai)
+ * @author wangjiuzhou (835540436@qq.com)
  * @date 2019/05/20
  *
  * 启动类，加载spring上下文
+ * @EnableHelloWorld 模块装配激活
  */
 @EnableHelloWorld
 public class EnableHelloWorldBootStrap {
