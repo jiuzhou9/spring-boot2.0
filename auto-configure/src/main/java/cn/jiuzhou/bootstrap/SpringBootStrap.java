@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2019/05/19
  *
  * 配置类，加载spring上下文
+ * 验证自定义模式注解
  * @ComponentScan 设置扫描的目标路径
  */
 @ComponentScan(value = "cn.jiuzhou.repository")
@@ -28,5 +29,7 @@ public class SpringBootStrap {
 
         MySecondRepository mySecondRepository = context.getBean("mySecondRepository", MySecondRepository.class);
         System.out.println("获取 mySecondRepository：" + mySecondRepository);
+
+        context.close();
     }
 }
