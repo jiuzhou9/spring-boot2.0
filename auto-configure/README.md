@@ -8,6 +8,8 @@
     - [模块装配示例](#%E6%A8%A1%E5%9D%97%E8%A3%85%E9%85%8D%E7%A4%BA%E4%BE%8B)
     - [如何自定义注解驱动式模块装配](#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E9%A9%B1%E5%8A%A8%E5%BC%8F%E6%A8%A1%E5%9D%97%E8%A3%85%E9%85%8D)
     - [如何自定义接口编程式驱动模块装配](#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%E7%BC%96%E7%A8%8B%E5%BC%8F%E9%A9%B1%E5%8A%A8%E6%A8%A1%E5%9D%97%E8%A3%85%E9%85%8D)
+  - [spring的条件注解](#spring%E7%9A%84%E6%9D%A1%E4%BB%B6%E6%B3%A8%E8%A7%A3)
+    - [@profile](#profile)
 
 # auto-configure
 > 基于springBoot 2.0.2.RELEASE版本,spring boot 的自动装配,主要包括"模式注解装配"、"Enable模块装配"
@@ -285,3 +287,84 @@ public class EnableHelloWorldBootStrap {
 }
 ```
 启动输出：helloWorld Bean:Hello,World 2019
+
+## spring的条件注解
+当条件满足的时候触发。
+
+### @profile
+一般用做环境配置。
+如下示例：
+```
+/**
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/05/24
+ */
+public interface Caculate {
+
+    /**
+     * 计算器：求和
+     * @param values
+     * @return
+     */
+    Integer sum(Integer ... values);
+}
+
+/**
+ * dev 环境使用的实现类
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/05/24
+ */
+@Profile(value = "dev")
+@Service
+public class CaculateDevImpl implements Caculate {
+
+    @Override
+    public Integer sum(Integer... values) {
+        System.out.println("dev 环境");
+        Integer reduce = Stream.of(values).reduce(0, Integer::sum);
+        return reduce;
+    }
+}
+
+/**
+ * test 环境使用的实现类
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/05/24
+ */
+@Profile(value = "test")
+@Service
+public class CaculateTestImpl implements Caculate {
+
+    @Override
+    public Integer sum(Integer... values) {
+        System.out.println("test 环境");
+        Integer reduce = Stream.of(values).reduce(0, Integer::sum);
+        return reduce;
+    }
+}
+```
+```
+/**
+ * 验证profile 在不同配置下加载不同的内容
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/05/24
+ */
+@ComponentScan(basePackages = "cn.jiuzhou.annotation.profile")
+public class ProfileBootStrap {
+
+    public static void main(String[] args) {
+        //获取spring上下文
+        ConfigurableApplicationContext context = new SpringApplicationBuilder(ProfileBootStrap.class)
+                .web(WebApplicationType.NONE)
+//                .profiles("dev")
+                .profiles("test")
+                .run(args);
+        Caculate caculate = context.getBean(Caculate.class);
+        Integer sum = caculate.sum(1, 2, 3, 4, 5);
+        System.out.println(sum);
+        context.close();
+    }
+}
+
+```
+两个环境下加载的实现类是不一样的。

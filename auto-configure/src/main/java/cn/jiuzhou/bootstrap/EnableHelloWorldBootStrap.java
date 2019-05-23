@@ -10,6 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @date 2019/05/20
  *
  * 启动类，加载spring上下文
+ * 验证自定义的 enable 模块注解
  * @EnableHelloWorld 模块装配激活
  */
 @EnableHelloWorld
@@ -23,5 +24,7 @@ public class EnableHelloWorldBootStrap {
         String helloWorld = context.getBean("helloWorld", String.class);
 
         System.out.println("helloWorld Bean:" + helloWorld);
+
+        context.close();
     }
 }
