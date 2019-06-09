@@ -1,4 +1,4 @@
-- [auto-configure](#auto-configure)
+- [auto-configure和spring的各种装配模式](#auto-configure%E5%92%8Cspring%E7%9A%84%E5%90%84%E7%A7%8D%E8%A3%85%E9%85%8D%E6%A8%A1%E5%BC%8F)
   - [元注解（释）](#%E5%85%83%E6%B3%A8%E8%A7%A3%E9%87%8A)
   - [什么是 Stereotype Annotations（模式注解装配）](#%E4%BB%80%E4%B9%88%E6%98%AF-stereotype-annotations%E6%A8%A1%E5%BC%8F%E6%B3%A8%E8%A7%A3%E8%A3%85%E9%85%8D)
   - [如何自定义模式注解](#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%BC%8F%E6%B3%A8%E8%A7%A3)
@@ -8,11 +8,12 @@
     - [模块装配示例](#%E6%A8%A1%E5%9D%97%E8%A3%85%E9%85%8D%E7%A4%BA%E4%BE%8B)
     - [如何自定义注解驱动式模块装配](#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E9%A9%B1%E5%8A%A8%E5%BC%8F%E6%A8%A1%E5%9D%97%E8%A3%85%E9%85%8D)
     - [如何自定义接口编程式驱动模块装配](#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%E7%BC%96%E7%A8%8B%E5%BC%8F%E9%A9%B1%E5%8A%A8%E6%A8%A1%E5%9D%97%E8%A3%85%E9%85%8D)
-  - [spring的条件注解](#spring%E7%9A%84%E6%9D%A1%E4%BB%B6%E6%B3%A8%E8%A7%A3)
-    - [@profile](#profile)
+  - [spring的条件装配](#spring%E7%9A%84%E6%9D%A1%E4%BB%B6%E8%A3%85%E9%85%8D)
+    - [@profile注解方式](#profile%E6%B3%A8%E8%A7%A3%E6%96%B9%E5%BC%8F)
+    - [编程方式实现条件装配](#%E7%BC%96%E7%A8%8B%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E6%9D%A1%E4%BB%B6%E8%A3%85%E9%85%8D)
 
-# auto-configure
-> 基于springBoot 2.0.2.RELEASE版本,spring boot 的自动装配,主要包括"模式注解装配"、"Enable模块装配"
+# auto-configure和spring的各种装配模式
+> 基于springBoot 2.0.2.RELEASE版本,spring boot 的自动装配,主要包括"模式注解装配"、"Enable模块装配"、"条件装配模式"
 spring文档：https://docs.spring.io/spring/docs/
     
 ## 元注解（释） 
@@ -288,10 +289,10 @@ public class EnableHelloWorldBootStrap {
 ```
 启动输出：helloWorld Bean:Hello,World 2019
 
-## spring的条件注解
+## spring的条件装配
 当条件满足的时候触发。
 
-### @profile
+### @profile注解方式
 一般用做环境配置。
 如下示例：
 ```
@@ -368,3 +369,85 @@ public class ProfileBootStrap {
 
 ```
 两个环境下加载的实现类是不一样的。
+
+### 编程方式实现条件装配
+* 接口Condition，当条件满足的时候，注解所对应的bean将会被注入。如下：
+定义一个条件注解
+```
+/**
+ * 条件装配注解
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/06/09
+ */
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Conditional(ConditionalOnSystem.class)
+public @interface ConditionalOnSystemProperty {
+
+    String value();
+
+    String name();
+}
+```
+指明满足的条件：
+```aidl
+/**
+ * 条件装配裁决类
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/06/09
+ */
+class ConditionalOnSystem implements Condition {
+
+    /**
+     * 断言条件是否满足
+     * @param context
+     * @param metadata
+     * @return 返回true那么component将会被注册，返回false那么component将不会被注册
+     */
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        //获取ConditionalOnSystemProperty注解上的属性集合
+        Map<String, Object> conditionOnSystem = metadata.getAnnotationAttributes(ConditionalOnSystemProperty.class.getName());
+        //获取ConditionalOnSystemProperty注解上的属性
+        String name = String.valueOf(conditionOnSystem.get("name"));
+        String value = String.valueOf(conditionOnSystem.get("value"));
+
+        String property = System.getProperty(name);
+        if (property.equals(value)){
+            return true;
+        }
+
+        return false;
+    }
+}
+```
+定义启动类：
+```aidl
+/**
+ * 自定义条件装配启动类
+ * @author wangjiuzhou (835540436@qq.com)
+ * @date 2019/06/09
+ */
+public class ConditionalBootStrap {
+
+    @Bean
+    @ConditionalOnSystemProperty(name = "user.name", value = "wangjiuzhou")
+    public String hello(){
+        System.out.println("hello 被注入了");
+        return "hello";
+    }
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = new SpringApplicationBuilder(ConditionalBootStrap.class)
+                .web(WebApplicationType.NONE)
+                .run(args);
+
+        String hello = context.getBean("hello", String.class);
+        System.out.println(hello);
+        context.close();
+    }
+}
+
+```
+启动会发现hello被注入了。
