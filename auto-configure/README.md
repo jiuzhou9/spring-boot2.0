@@ -11,7 +11,7 @@
   - [spring的条件装配](#spring%E7%9A%84%E6%9D%A1%E4%BB%B6%E8%A3%85%E9%85%8D)
     - [@profile注解方式](#profile%E6%B3%A8%E8%A7%A3%E6%96%B9%E5%BC%8F)
     - [编程方式实现条件装配](#%E7%BC%96%E7%A8%8B%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E6%9D%A1%E4%BB%B6%E8%A3%85%E9%85%8D)
-
+  - [springBoot的自动装配](#springboot%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D)
 # auto-configure和spring的各种装配模式
 > 基于springBoot 2.0.2.RELEASE版本,spring boot 的自动装配,主要包括"模式注解装配"、"Enable模块装配"、"条件装配模式",
 其实spring boot的自动装配也是基于springFrameWork手动装配实现的。
