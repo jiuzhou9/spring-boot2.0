@@ -1,0 +1,9 @@
+# Application Context Initializers
+org.springframework.context.ApplicationContextInitializer=\
+cn.jiuzhou.context.HelloApplicationContextInitializer,\
+cn.jiuzhou.context.AfterHelloApplicationContextInitializer
+
+# Application Listeners
+org.springframework.context.ApplicationListener=\
+cn.jiuzhou.listener.HelloApplicationListener,\
+cn.jiuzhou.listener.AfterHelloApplicationListener
